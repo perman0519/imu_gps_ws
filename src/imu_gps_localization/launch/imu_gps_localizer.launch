@@ -1,0 +1,9 @@
+<launch>
+  <param name="config_file_path" value="$(find imu_gps_localization)/config/config.yaml" />
+
+
+  <param name="log_folder"      type="string" value="$(find imu_gps_localization)" />
+
+  <node name="nmea_topic_driver" pkg="nmea_navsat_driver" type="nmea_topic_driver" output="screen" />
+  <node pkg="imu_gps_localization" type="imu_gps_localization_node" name="imu_gps_localizer" output="screen"/>
+</launch>
