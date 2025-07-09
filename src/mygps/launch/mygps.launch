@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="mygps" type="gps_timestamp_republisher.py" name="gps_timestamp_republisher" output="screen" />
+  <node pkg="mygps" type="sync.py" name="gps_imu_sync" output="screen" />
+</launch>
