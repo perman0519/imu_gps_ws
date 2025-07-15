@@ -1,0 +1,19 @@
+# navsat_transform.yaml
+navsat_transform_node:
+  ros__parameters:
+    # 좌표계 설정
+    magnetic_declination_radians: 0.0
+    yaw_offset: 0.0
+    zero_altitude: true
+    broadcast_utm_transform: true
+    broadcast_utm_transform_as_parent_frame: false
+    publish_filtered_gps: true
+    use_odometry_yaw: true
+    wait_for_datum: false
+
+    # 좌표계 이름
+    world_frame: odom
+    base_link_frame: base_link
+
+    # 주파수
+    frequency: 10.0

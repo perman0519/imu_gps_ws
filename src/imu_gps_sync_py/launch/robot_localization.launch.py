@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+
+import os
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
+
+def generate_launch_description():
+    # 패키지 경로 설정
+    pkg_path = get_package_share_directory('imu_gps_sync_py')
+
+    # 설정 파일 경로
+    ekf_config_file = os.path.join(pkg_path, 'config', 'ekf_localization.yaml')
+    navsat_config_file = os.path.join(pkg_path, 'config', 'navsat_transform.yaml')
+
+    return LaunchDescription([
+        # GPS 타임스탬프 재퍼블리셔
+        Node(
+            package='imu_gps_sync_py',
+            executable='gps_repub',
+            name='gps_repub_node',
+            output='screen'
+        ),
+
+                # 선택사항: GPS-IMU 동기화 모니터링
+        Node(
+            package='imu_gps_sync_py',
+            executable='gps_imu_sync',
+            name='gps_imu_sync_node',
+            output='screen'
+        ),
+
+        # NavSat Transform 노드 (GPS → Odometry 변환)
+        Node(
+            package='robot_localization',
+            executable='navsat_transform_node',
+            name='navsat_transform',
+            output='screen',
+            parameters=[navsat_config_file],
+            remappings=[
+                ('imu/data', '/imu/data'),
+                ('gps/fix', '/gps/fix'),
+                ('odometry/filtered', '/odometry/filtered')
+            ]
+        ),
+
+        # EKF 노드 (센서 융합)
+        Node(
+            package='robot_localization',
+            executable='ekf_node',
+            name='ekf_filter_node',
+            output='screen',
+            parameters=[ekf_config_file],
+            remappings=[
+                ('odometry/filtered', '/odometry/filtered')
+            ]
+        )
+    ])
