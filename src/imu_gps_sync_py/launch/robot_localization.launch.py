@@ -2,8 +2,6 @@
 
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
@@ -12,27 +10,27 @@ def generate_launch_description():
     pkg_path = get_package_share_directory('imu_gps_sync_py')
 
     # 설정 파일 경로
-    ekf_config_file = os.path.join(pkg_path, 'config', 'ekf_localization.yaml')
+    ekf_config_file = os.path.join(pkg_path, 'config', 'ekf_global.yaml')
     navsat_config_file = os.path.join(pkg_path, 'config', 'navsat_transform.yaml')
 
     return LaunchDescription([
-        # GPS 타임스탬프 재퍼블리셔
-        Node(
-            package='imu_gps_sync_py',
-            executable='gps_repub',
-            name='gps_repub_node',
-            output='screen'
-        ),
+        # # GPS 타임스탬프 재퍼블리셔
+        # Node(
+        #     package='imu_gps_sync_py',
+        #     executable='gps_repub',
+        #     name='gps_repub_node',
+        #     output='screen'
+        # ),
 
-                # 선택사항: GPS-IMU 동기화 모니터링
-        Node(
-            package='imu_gps_sync_py',
-            executable='gps_imu_sync',
-            name='gps_imu_sync_node',
-            output='screen'
-        ),
+        #         # 선택사항: GPS-IMU 동기화 모니터링
+        # Node(
+        #     package='imu_gps_sync_py',
+        #     executable='gps_imu_sync',
+        #     name='gps_imu_sync_node',
+        #     output='screen'
+        # ),
 
-        # NavSat Transform 노드 (GPS → Odometry 변환)
+          # GPS coordinate transformation
         Node(
             package='robot_localization',
             executable='navsat_transform_node',
@@ -40,21 +38,22 @@ def generate_launch_description():
             output='screen',
             parameters=[navsat_config_file],
             remappings=[
-                ('imu/data', '/imu/data'),
-                ('gps/fix', '/gps/fix'),
-                ('odometry/filtered', '/odometry/filtered')
+                ('/imu/data', '/imu/data'),
+                ('/gps/fix', '/fix'),
+                ('/odometry/filtered', '/odometry/filtered'),
+                ('/odometry/gps', '/odometry/gps')
             ]
         ),
 
-        # EKF 노드 (센서 융합)
+        # Global EKF (IMU + GPS fusion)
         Node(
             package='robot_localization',
             executable='ekf_node',
-            name='ekf_filter_node',
+            name='ekf_global',
             output='screen',
             parameters=[ekf_config_file],
             remappings=[
-                ('odometry/filtered', '/odometry/filtered')
+                ('/odometry/filtered', '/odometry/global'),
             ]
-        )
+        ),
     ])
