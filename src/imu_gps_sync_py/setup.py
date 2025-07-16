@@ -13,6 +13,7 @@ setup(
         ('share/' + package_name + '/launch', ['launch/robot_localization.launch.py']),
         ('share/' + package_name + '/config', ['config/ekf_global.yaml']),
         ('share/' + package_name + '/config', ['config/navsat_transform.yaml']),
+        ('share/' + package_name + '/config', ['config/ekf_local.yaml']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
