@@ -22,9 +22,9 @@ rosbag2_bagfile_information:
   compression_format: ""
   compression_mode: ""
   relative_file_paths:
-    - rosbag2_2025_07_21-01_14_05_0.db3
+    - hill_driving.db3
   files:
-    - path: rosbag2_2025_07_21-01_14_05_0.db3
+    - path: hill_driving.db3
       starting_time:
         nanoseconds_since_epoch: 1753060445508939046
       duration:
