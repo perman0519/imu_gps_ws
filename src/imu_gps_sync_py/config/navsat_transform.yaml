@@ -1,32 +1,44 @@
-# navsat_transform.yaml
+# # navsat_transform.yaml
+# navsat_transform_node:
+#   ros__parameters:
+#     # 기본 설정
+#     frequency: 30.0
+#     delay: 3.0
+#     magnetic_declination_radians: -0.131  # 인천 지역 자기편각
+#     yaw_offset: 0.0
+#     zero_altitude: false
+#     broadcast_cartesian_transform: true  # deprecated 파라미터 수정
+#     broadcast_cartesian_transform_as_parent_frame: false
+#     publish_filtered_gps: true
+#     use_odometry_yaw: true
+#     wait_for_datum: false
+
+#     # Frame IDs
+#     datum_service: datum
+#     gps_frame_id: gps
+#     base_link_frame_id: imu_link
+#     world_frame_id: odom
+#     map_frame_id: map
+
+#     # 토픽 설정 (이 부분이 빠져있었음!)
+#     navsat_topic: /gps/fix  # GPS 입력 토픽
+#     imu_topic: /imu/data  # IMU 입력 토픽
+
+#     odometry_topic: /odometry/filtered  # EKF 출력 토픽
+#     gps_odom_topic: /odometry/gps  # GPS 변환 출력 토픽
+
+#     # GPS 설정
+#     transform_timeout: 0.0
+#     transform_time_offset: 0.0
+
 navsat_transform_node:
   ros__parameters:
-    # 기본 설정
     frequency: 30.0
     delay: 3.0
-    magnetic_declination_radians: -0.131  # 인천 지역 자기편각
+    magnetic_declination_radians: 0.0
     yaw_offset: 0.0
-    zero_altitude: false
-    broadcast_cartesian_transform: true  # deprecated 파라미터 수정
-    broadcast_cartesian_transform_as_parent_frame: false
+    zero_altitude: true
+    broadcast_utm_transform: true
     publish_filtered_gps: true
-    use_odometry_yaw: true
+    use_odometry_yaw: false
     wait_for_datum: false
-
-    # Frame IDs
-    datum_service: datum
-    gps_frame_id: gps
-    base_link_frame_id: imu_link
-    world_frame_id: odom
-    map_frame_id: map
-
-    # 토픽 설정 (이 부분이 빠져있었음!)
-    navsat_topic: /gps/fix  # GPS 입력 토픽
-    imu_topic: /imu/data  # IMU 입력 토픽
-
-    odometry_topic: /odometry/filtered  # EKF 출력 토픽
-    gps_odom_topic: /odometry/gps  # GPS 변환 출력 토픽
-
-    # GPS 설정
-    transform_timeout: 0.0
-    transform_time_offset: 0.0

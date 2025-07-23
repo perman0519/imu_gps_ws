@@ -1,7 +1,7 @@
 ekf_global:
   ros__parameters:
     frequency: 30.0
-    two_d_mode: true  # 2D 모드 (Z축 고정)
+    two_d_mode: false  # 2D 모드 (Z축 고정)
 
     # GPS - 위치만 사용
     odom0: /odometry/gps
@@ -14,10 +14,10 @@ ekf_global:
     # IMU - 자세만 사용
     imu0: /imu/data
     imu0_config: [false, false, false,    # 위치 사용 안함
-                  false, false, true,     # yaw만 사용 (roll, pitch 제외)
+                  true, true, true,     # yaw만 사용 (roll, pitch 제외)
                   false, false, false,    # 속도 사용 안함
-                  false, false, false,    # 각속도 사용 안함
-                  false, false, false]    # 가속도 사용 안함
+                  true, true, true,    # 각속도 사용 안함
+                  true, true, true]    # 가속도 사용 안함
 
     # 적절한 프로세스 노이즈
     process_noise_covariance: [

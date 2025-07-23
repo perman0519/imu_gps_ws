@@ -11,6 +11,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', ['launch/robot_localization.launch.py']),
+        ('share/' + package_name + '/launch', ['launch/gps_display.launch.py']),
         ('share/' + package_name + '/config', ['config/ekf_global.yaml']),
         ('share/' + package_name + '/config', ['config/navsat_transform.yaml']),
         ('share/' + package_name + '/config', ['config/ekf_local.yaml']),
@@ -26,6 +27,11 @@ setup(
         'console_scripts': [
             'gps_repub = imu_gps_sync_py.gps_repub:main',
             'gps_imu_sync = imu_gps_sync_py.gps_imu_sync:main',
+            'gps_path_pub = imu_gps_sync_py.gps_path_pub:main',
+            'gps_to_point = imu_gps_sync_py.gps_to_point:main',
+            'gps_to_web = imu_gps_sync_py.gps_to_web:main',
+            'gps_with_grid = imu_gps_sync_py.gps_with_grid:main',
+            'gps_to_csv = imu_gps_sync_py.gps_to_csv:main',
         ],
     },
 )
