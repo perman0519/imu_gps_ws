@@ -32,6 +32,8 @@ setup(
             'gps_to_web = imu_gps_sync_py.gps_to_web:main',
             'gps_with_grid = imu_gps_sync_py.gps_with_grid:main',
             'gps_to_csv = imu_gps_sync_py.gps_to_csv:main',
+            'imu_to_csv = imu_gps_sync_py.imu_to_csv:main',
+            'imu_repub = imu_gps_sync_py.imu_repub:main',
         ],
     },
 )

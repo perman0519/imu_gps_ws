@@ -10,7 +10,7 @@ class GPSIMUSyncNode(Node):
 
         # 두 센서 토픽 구독
         self.gps_sub = Subscriber(self, NavSatFix, '/gps/fix')
-        self.imu_sub = Subscriber(self, Imu, '/imu/data')
+        self.imu_sub = Subscriber(self, Imu, '/imure/data')
 
         # 동기화 객체 생성
         self.ats = ApproximateTimeSynchronizer(

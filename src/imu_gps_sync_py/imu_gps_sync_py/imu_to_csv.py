@@ -2,17 +2,17 @@
 
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import NavSatFix
+from sensor_msgs.msg import Imu
 import csv
 import os
 from datetime import datetime
 
-class GPSToCSVNode(Node):
+class IMUToCSVNode(Node):
     def __init__(self):
-        super().__init__('gps_to_csv_node')
+        super().__init__('imu_to_csv_node')
 
         # 파라미터 설정
-        self.declare_parameter('csv_file_path', 'gps_fix_data.csv')
+        self.declare_parameter('csv_file_path', 'imu_data.csv')
         self.declare_parameter('append_mode', True)
 
         # 파라미터 가져오기
@@ -22,15 +22,15 @@ class GPSToCSVNode(Node):
         # CSV 파일 초기화
         self.init_csv_file()
 
-        # /fix 토픽 구독
+        # /imu/data 토픽 구독
         self.subscription = self.create_subscription(
-            NavSatFix,
-            '/gps/fix',
-            self.fix_callback,
+            Imu,
+            '/imu/data',
+            self.imu_callback,
             10
         )
 
-        self.get_logger().info(f'GPS Fix to CSV converter started. Saving to: {self.csv_file_path}')
+        self.get_logger().info(f'IMU to CSV converter started. Saving to: {self.csv_file_path}')
         self.get_logger().info(f'Append mode: {self.append_mode}')
 
     def init_csv_file(self):
@@ -43,30 +43,40 @@ class GPSToCSVNode(Node):
                 writer = csv.writer(csvfile)
                 # CSV 헤더 작성
                 writer.writerow([
-                    'ros_time_sec', # ROS 시간 초
-                    'ros_time_nanosec', # ROS 시간 나노초
-                    'frame_id', # 프레임 ID: gps
-                    'status', # 상태: 0:GNSS, 2: GSNN + RTK, -1: error
-                    'service',
-                    'latitude',
-                    'longitude',
-                    'altitude'
+                    'ros_time_sec',
+                    'ros_time_nanosec',
+                    'frame_id',
+                    'orientation_x',
+                    'orientation_y',
+                    'orientation_z',
+                    'orientation_w',
+                    'angular_velocity_x',
+                    'angular_velocity_y',
+                    'angular_velocity_z',
+                    'linear_acceleration_x',
+                    'linear_acceleration_y',
+                    'linear_acceleration_z'
                 ])
             self.get_logger().info('CSV file initialized with headers')
 
-    def fix_callback(self, msg):
-        """NavSatFix 메시지를 받아서 CSV에 저장"""
+    def imu_callback(self, msg):
+        """Imu 메시지를 받아서 CSV에 저장"""
         try:
             # CSV 데이터 준비
             row_data = [
                 msg.header.stamp.sec,
                 msg.header.stamp.nanosec,
                 msg.header.frame_id,
-                msg.status.status,
-                msg.status.service,
-                msg.latitude,
-                msg.longitude,
-                msg.altitude
+                msg.orientation.x,
+                msg.orientation.y,
+                msg.orientation.z,
+                msg.orientation.w,
+                msg.angular_velocity.x,
+                msg.angular_velocity.y,
+                msg.angular_velocity.z,
+                msg.linear_acceleration.x,
+                msg.linear_acceleration.y,
+                msg.linear_acceleration.z,
             ]
 
             # CSV 파일에 데이터 추가
@@ -74,20 +84,21 @@ class GPSToCSVNode(Node):
                 writer = csv.writer(csvfile)
                 writer.writerow(row_data)
 
-            self.get_logger().info(f'GPS data saved: Status={msg.status.status} Lat={msg.latitude:.6f}, Lon={msg.longitude:.6f}, Alt={msg.altitude:.3f}')
+            self.get_logger().info(f'IMU data saved: Accel=({msg.linear_acceleration.x:.3f}, {msg.linear_acceleration.y:.3f}, {msg.linear_acceleration.z:.3f}), '
+                                  f'Gyro=({msg.angular_velocity.x:.3f}, {msg.angular_velocity.y:.3f}, {msg.angular_velocity.z:.3f})')
 
         except Exception as e:
-            self.get_logger().error(f'Error saving GPS data to CSV: {str(e)}')
+            self.get_logger().error(f'Error saving IMU data to CSV: {str(e)}')
 
 def main(args=None):
     rclpy.init(args=args)
 
-    node = GPSToCSVNode()
+    node = IMUToCSVNode()
 
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
-        node.get_logger().info('GPS to CSV converter stopped by user')
+        node.get_logger().info('IMU to CSV converter stopped by user')
     finally:
         node.destroy_node()
         rclpy.shutdown()
